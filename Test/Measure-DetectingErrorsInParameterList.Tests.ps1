@@ -297,7 +297,7 @@ Describe "Rule DetectingErrorsInParameterList" {
         $Results[8].Severity| should be 'Error'
 
         $Results[9].Severity| should be 'Warning'
-        10..15|Foreach { $Results[$_].Severity| should be 'Error' }
+        10..15|ForEach-Object { $Results[$_].Severity| should be 'Error' }
 
         $Results[0].Message|should be (($RulesMessage.E_ParameterNameContainsInvalidCharacter -F 'TestParameterSet', '32Bits') + $RulesMessage.E_ParameterNameInvalidByNumber)
         $Results[1].Message|should be ($RulesMessage.W_PsnUnnecessaryParameterAttribut -F 'TestParameterSet', 'S')
@@ -323,7 +323,7 @@ Describe "Rule DetectingErrorsInParameterList" {
         
         $Results = Invoke-ScriptAnalyzer -Path $Filename -CustomRulePath $CustomRulePath
         $Results.Count | should be (3)
-        0..2|% {$Results[$_].Severity| should be 'Error'}
+        0..2|ForEach-Object {$Results[$_].Severity| should be 'Error'}
         $Results[0].Message|should be ($RulesMessage.E_ConflictDuplicateParameterAttribut -F 'TestParameterSet','B','F2')
         $Results[1].Message|should be ($RulesMessage.E_ConflictDuplicateParameterAttribut -F 'TestParameterSet','C','F3')
         $Results[2].Message|should be ($RulesMessage.E_ConflictDuplicateParameterAttribut -F 'TestParameterSet','D','F2')
