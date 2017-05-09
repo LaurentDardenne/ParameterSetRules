@@ -4,5 +4,5 @@ Release/
 test/Out/*
 .vscode/
 *.bak
-OptimizationRules.library-ms
-OptimizationRules.tdl
+ParameterSetRules.library-ms
+ParameterSetRules.tdl

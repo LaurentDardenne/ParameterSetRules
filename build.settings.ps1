@@ -137,10 +137,10 @@ function Test-BOMFile{
 Properties {
     # ----------------------- Basic properties --------------------------------
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '')]
-    $ProjectName= 'OptimizationRules'
+    $ProjectName= 'ParameterSetRules'
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '')]
-    $ProjectUrl= 'https://github.com/LaurentDardenne/OptimizationRules.git'
+    $ProjectUrl= 'https://github.com/LaurentDardenne/ParameterSetRules.git'
 
     # The root directories for the module's docs, src and test.
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '')]
@@ -176,7 +176,7 @@ Properties {
     # Typically you wouldn't put any file under the src dir unless the file was going to ship with
     # the module. However, if there are such files, add their $SrcRootDir relative paths to the exclude list.
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '')]
-    $Exclude = @('OptimizationRules.psm1','OptimizationRules.psd1','*.bak')
+    $Exclude = @('ParameterSetRules.psm1','ParameterSetRules.psd1','*.bak')
 
     # ------------------ Script analysis properties ---------------------------
 

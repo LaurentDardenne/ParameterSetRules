@@ -1,19 +1,6 @@
-﻿$global:here = Split-Path -Parent $MyInvocation.MyCommand.Path
-
-if (Test-Path env:APPVEYOR_BUILD_FOLDER)
-{ 
-  $M=Import-module "$PSScriptAnalyzerRulesDelivery\ParameterSetRules.psd1" -Pass 
-  
-  $Path="$env:APPVEYOR_BUILD_FOLDER\Modules\ParameterSetRules\Test\Position"
-  $CustomRulePath="$PSScriptAnalyzerRulesDelivery\ParameterSetRules.psm1"
-}
-else
-{ 
-  $M=Import-module ..\ParameterSetRules.psd1 -Pass
-  $Path=".\Position"
-  $CustomRulePath="..\ParameterSetRules.psm1"  
-}
-
+﻿$Path="$PsScriptRoot\Position"
+$CustomRulePath='..\Release\ParameterSetRules\ParameterSetRules.psm1'
+$M=Import-module ..\Release\ParameterSetRules\ParameterSetRules.psd1 -Pass
 
 $RulesMessage,$SharedParameterSetName=&$m {$RulesMsg,$script:SharedParameterSetName}
 
