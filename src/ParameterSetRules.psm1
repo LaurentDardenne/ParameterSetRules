@@ -656,6 +656,3 @@ Function OnRemoveParameterSetRules {
 # Section  Initialization
 $MyInvocation.MyCommand.ScriptBlock.Module.OnRemove = { OnRemoveParameterSetRules }
 #<UNDEF %DEBUG%>   
- 
-Export-ModuleMember -Function Measure-DetectingErrorsInDefaultParameterSetName,
-                              Measure-DetectingErrorsInParameterList
