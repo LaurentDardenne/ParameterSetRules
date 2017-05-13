@@ -1,6 +1,5 @@
-[![Build status](https://ci.appveyor.com/api/projects/status/wn4n7ml61ygmoume?svg=true)](https://ci.appveyor.com/project/LaurentDardenne/parametersetrules)
+﻿[![Build status](https://ci.appveyor.com/api/projects/status/wn4n7ml61ygmoume?svg=true)](https://ci.appveyor.com/project/LaurentDardenne/parametersetrules)
                                                                                     
-![Logo](https://raw.githubusercontent.com/LaurentDardenne/Template/master/Assets/Template.png
 # ParameterSetRules
 This module contains script analyzer rules to control the param block of a scriptblock.
 
