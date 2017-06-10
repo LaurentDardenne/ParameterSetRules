@@ -489,8 +489,13 @@ Function Measure-DetectingErrorsInParameterList{
       #           https://msdn.microsoft.com/en-us/library/dd878270(v=vs.85).aspx#SD01
       #régle 10: Use Pascal Case for Parameter Names
 
-      # régle 13 : nommage des paramètre utilisant un nom de varaible automatique : 
+      # régle 13 : nommage des paramètre utilisant un nom de variable automatique : 
       # https://github.com/PowerShell/PowerShell/issues/3061#issuecomment-275776552
+      
+      #régle 14 : Un paramètre Mandatory ne peut avoir de valeur par défaut
+      #  [Parameter(Position=0,Mandatory=$True,ValueFromPipeline = $true)] 
+      # [log4net.Repository.ILoggerRepository] $Repository=$([Log4net.LogManager]::GetRepository($script:DefaultRepositoryName)),
+
 
 
    $DebugLogger.PSDebug("$('-'*40)") #<%REMOVE%>
