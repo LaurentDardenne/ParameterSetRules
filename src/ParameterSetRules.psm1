@@ -15,7 +15,7 @@ Import-LocalizedData -BindingVariable RulesMsg -Filename ParameterSetRules.Resou
 
 #todo bug PSScriptAnalyzer : https://github.com/PowerShell/PSScriptAnalyzer/issues/599
 #todo bug ps v4,5,6: https://github.com/PowerShell/PowerShell/issues/2212#issuecomment-257989424
-#todo buf OutputType : https://github.com/PowerShell/PowerShell/issues/2935
+#todo bug OutputType : https://github.com/PowerShell/PowerShell/issues/2935
 Import-module Log4Posh
 
 $Script:lg4n_ModuleName=$MyInvocation.MyCommand.ScriptBlock.Module.Name
@@ -41,6 +41,10 @@ $script:isSharedParameterSetName_Unique=$false
 
 $script:Helpers=[Microsoft.Windows.PowerShell.ScriptAnalyzer.Helper]::new($MyInvocation.MyCommand.ScriptBlock.Module.SessionState.InvokeCommand,$null)
 
+
+ #todo bug PSScriptAnalyzer : https://github.com/PowerShell/PSScriptAnalyzer/issues/599
+Add-Type -AssemblyName System.Data.Entity.Design,System.Globalization
+$script:PluralSrvc =[System.Data.Entity.Design.PluralizationServices.PluralizationService]::CreateService(([System.Globalization.CultureInfo]::GetCultureInfo("en-us")))
 Function NewCorrectionExtent{
  param ($Extent,$Text,$Description)
 
@@ -293,7 +297,7 @@ function GetParameter{
       #   [Parameter(ParameterSetName="F6")]
       #   $A          
       #BUG PS: 
-      # une duplication de déclaration identique invalide le résultat de Get-Commande,
+      # une duplication de déclaration identique invalide le résultat de Get-Command,
       # Parameters et parameterSet sont vide.
       #   
       #Erreur lors de la duplication de la déclaration :
@@ -316,59 +320,92 @@ function GetParameter{
     }                                       
   }
 
+  function TestPluralParameterName {
+    param ([string] $ParameterName)
+     #Avoid using plural names for parameters whose value is a single element.
+     #  https://msdn.microsoft.com/en-us/library/dd878270(v=vs.85).aspx#SD03
+     #todo : uses case with array
+    $DebugLogger.PSDebug("in TestPluralParameterName: is `$script:PluralSrvc null: $($null -eq $script:PluralSrvc)") #<%REMOVE%>
+    $isPlural=$script:PluralSrvc.isPlural($ParameterName)
+    $DebugLogger.PSDebug("'$ParameterName' isPlural  ? $isPlural") #<%REMOVE%>
+    if ($isPlural -and ($script:PluralSrvc.isSingular($ParameterName)))
+    { 
+      $DebugLogger.PSDebug("'$ParameterName' has no plural form.") #<%REMOVE%>
+      $isPlural=$false
+    }
+   return $isPlural
+  }
+
   $Parameters=@{}
   $DebugLogger.PSDebug("BlockParameters.Count: $($BlockParameters.Count)") #<%REMOVE%>
   Foreach ($Parameter in $BlockParameters)
   {
-   $ParameterName=$Parameter.Name.VariablePath.UserPath
-   $PSN=$script:SharedParameterSetName
-   
-    #régle 1 : un nom de paramètre ne doit pas (ne devrait pas ?) commencer par un chiffre,
-    # ni contenir certains caractères. Ceci pour les noms de paramètre ${+Name.Next*}
-   $Rule=TestParameterName $NameOfBlock $ParameterName $Ast 
-   if ($null -ne $Rule)  
-   { $ListDR.Add((NewDiagnosticRecord 'ProvideValidNameForParameter' $Rule Error $Ast)) > $null   } 
-               
-   
-   if ($Parameter.Attributes.Count -eq 0) 
-   { AddParameter $ParameterName $psn }
-   else
-   { 
-     $Predicate= { $args[0].TypeName.FullName -eq 'Parameter' }
-     $All=$Parameter.Attributes.FindAll($Predicate,$true) 
-     if ($null -eq $All) 
-     { AddParameter $ParameterName $psn }
-     else
-     {
-        #Si un attribut Parameter est déclaré plusieurs fois sur le même jeux
-        #On gére les doublons, mais on ne considére que la première déclaration de [Parameter()] 
-       foreach ($Attribute in $Parameter.Attributes)
-       {
-         if ($Attribute.TypeName.FullName -eq 'Parameter')
-         {
-           $Position=$script:PositionDefault
-           if (($Attribute.NamedArguments.Count -eq 0) -and ($Attribute.PositionalArguments.Count -eq 0))
-           {
-             #régle 6: Un attribut [Parameter()] vide est inutile
-             $DebugLogger.PSDebug("`tRule : [Parameter()] vide") #<%REMOVE%>
-             $Result_DEIPL.Add((NewDiagnosticRecord 'AvoidUsingUnnecessaryParameterAttribut' ($RulesMsg.W_PsnUnnecessaryParameterAttribut -F $NameOfBlock,$ParameterName) Warning $ScriptBlockAst )) > $null
-           }
-           else 
-           {
-             foreach ($NamedArgument in $Attribute.NamedArguments)
-             {
-                $ArgumentName=$NamedArgument.ArgumentName
-                if ($ArgumentName -eq 'ParameterSetName')
-                { $PSN=$NamedArgument.Argument.Value }
-                elseif ($ArgumentName -eq 'Position')
-                { $Position=$NamedArgument.Argument.Value}
-             }
-           }
-          AddParameter $ParameterName $psn $Position
-        } 
-       }
-    }
-  }  
+    $ParameterName=$Parameter.Name.VariablePath.UserPath
+    $PSN=$script:SharedParameterSetName
+    
+      #régle 1 : un nom de paramètre ne doit pas (ne devrait pas ?) commencer par un chiffre,
+      # ni contenir certains caractères. Ceci pour les noms de paramètre ${+Name.Next*}
+    $Rule=TestParameterName $NameOfBlock $ParameterName $Ast 
+    if ($null -ne $Rule)  
+    { $ListDR.Add((NewDiagnosticRecord 'ProvideValidNameForParameter' $Rule Error $Ast)) > $null } 
+    
+      #régle 9 : Use Singular Parameter Names
+    $DebugLogger.PSDebug("TestPluralParameterName '$ParameterName'") #<%REMOVE%>
+    if (TestPluralParameterName $ParameterName)
+      { 
+        $DebugLogger.PSDebug("'$ParameterName' create UseSingularNounForParameter record.") #<%REMOVE%>
+        $message= $RulesMsg.E_ParameterNameUsePlural -F $ParameterName,($script:PluralSrvc.Singularize($ParameterName))
+        $ListDR.Add((NewDiagnosticRecord 'UseSingularNounForParameter' $message Warning $Ast)) > $null 
+      } 
+      
+      #régle 10: The parameter names should be in PascalCase.
+    if ($ParameterName -cnotmatch '^([A-Z][a-z]+)+$')
+    { 
+        #groupe : une majuscule suivi d'une ou plusieures minuscules, le groupe peut être présent plusieurs fois 
+        $DebugLogger.PSDebug("'$ParameterName' create UsePascalCaseForParameterName record.") #<%REMOVE%>
+        $message= $RulesMsg.E_UsePascalCaseForParameterName -F $ParameterName
+        $ListDR.Add((NewDiagnosticRecord 'UsePascalCaseForParameterName' $message Information $Ast)) > $null 
+    } 
+    
+    if ($Parameter.Attributes.Count -eq 0) 
+    { AddParameter $ParameterName $psn }
+    else
+    { 
+      $Predicate= { $args[0].TypeName.FullName -eq 'Parameter' }
+      $All=$Parameter.Attributes.FindAll($Predicate,$true) 
+      if ($null -eq $All) 
+      { AddParameter $ParameterName $psn }
+      else
+      {
+          #Si un attribut Parameter est déclaré plusieurs fois sur le même jeux
+          #On gére les doublons, mais on ne considére que la première déclaration de [Parameter()] 
+        foreach ($Attribute in $Parameter.Attributes)
+        {
+          if ($Attribute.TypeName.FullName -eq 'Parameter')
+          {
+            $Position=$script:PositionDefault
+            if (($Attribute.NamedArguments.Count -eq 0) -and ($Attribute.PositionalArguments.Count -eq 0))
+            {
+              #régle 6: Un attribut [Parameter()] vide est inutile
+              $DebugLogger.PSDebug("`tRule : [Parameter()] vide") #<%REMOVE%>
+              $Result_DEIPL.Add((NewDiagnosticRecord 'AvoidUsingUnnecessaryParameterAttribut' ($RulesMsg.W_PsnUnnecessaryParameterAttribut -F $NameOfBlock,$ParameterName) Warning $ScriptBlockAst )) > $null
+            }
+            else 
+            {
+              foreach ($NamedArgument in $Attribute.NamedArguments)
+              {
+                  $ArgumentName=$NamedArgument.ArgumentName
+                  if ($ArgumentName -eq 'ParameterSetName')
+                  { $PSN=$NamedArgument.Argument.Value }
+                  elseif ($ArgumentName -eq 'Position')
+                  { $Position=$NamedArgument.Argument.Value}
+              }
+            }
+            AddParameter $ParameterName $psn $Position
+          } 
+        }
+      }
+    }  
  } 
  ,$Parameters 
 }#GetParameter   
@@ -387,6 +424,20 @@ function IsSafeNameOrIdentifier{
  param([string] $name)
    # from PowerShellSource:\src\System.Management.Automation\engine\CommandMetadata.cs
  [Regex]::IsMatch($name, "^[_\?\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}]{1,100}$", "Singleline,CultureInvariant")
+<#
+^ asserts position at start of a line
+Match a single character present in the list below [_\?\p{Ll}\p{Lu}\p{Lt}\p{Lo}\p{Lm}]{1,100}
+{1,100} Quantifier — Matches between 1 and 100 times, as many times as possible, giving back as needed (greedy)
+_ matches the character _ literally (case sensitive)
+\? matches the character ? literally (case sensitive)
+\p{Ll} matches a lowercase letter that has an uppercase variant
+\p{Lu} matches an uppercase letter that has a lowercase variant
+\p{Lt} matches a letter that appears at the start of a word when only the first letter of the word is capitalized
+\p{Lo} matches a letter or ideograph that does not have lowercase and uppercase variants
+\p{Lm} matches a special character that is used like a letter
+$ asserts position at the end of a line
+#>
+
 }
 #<UNDEF %DEBUG%>
   #Toutes les constructions ne sont pas testées
@@ -477,17 +528,13 @@ Function Measure-DetectingErrorsInParameterList{
 
   process {
       #régle 8 :TODO la présence de l'attribut [Parameter(ValueFromPipeline = $true)] doit être unique dans un PSN  
-      #         Support the ProcessRecord Method
-      #           To accept all the records from the preceding cmdlet in the pipeline, your cmdlet must implement the ProcessRecord method.
+      #         
+      # régle 8-1 : Support the ProcessRecord Method
+      #             To accept all the records from the preceding cmdlet in the pipeline, your cmdlet must implement the ProcessRecord method.
   
   #Recommendations : 
       #régle 11 : Use Strongly-Typed .NET Framework Types: Parameters should be defined as .NET Framework types to provide better parameter validation.
       #régle 12 : Support Input from the Pipeline : In each parameter set for a cmdlet, include at least one parameter that supports input from the pipeline
-
-   #convention de Nommage      
-      #régle 9 : Use Singular Parameter Names; Avoid using plural names for parameters whose value is a single element.
-      #           https://msdn.microsoft.com/en-us/library/dd878270(v=vs.85).aspx#SD01
-      #régle 10: Use Pascal Case for Parameter Names
 
       # régle 13 : nommage des paramètre utilisant un nom de variable automatique : 
       # https://github.com/PowerShell/PowerShell/issues/3061#issuecomment-275776552
@@ -546,8 +593,15 @@ Function Measure-DetectingErrorsInParameterList{
     else {
       $Parameters=$ParamBlock.Parameters
     }  
-  #todo delete
-    $DebugLogger.PSDebug("AVANT Parameters.Count: $($Parameters.Count)") #<%REMOVE%>
+<#
+lire tous les parametres rechercher ceux :
+ - qui sont mandatory qui ont une valeur par défaut.
+    si oui erreur Nom de function ou n° line nomParamétre
+ -qui sont au pluriel   
+
+#>
+
+    $DebugLogger.PSDebug("Parameters.Count: $($Parameters.Count)") #<%REMOVE%>
     $ParametersList = GetParameter $Parameters $Result_DEIPL
     $script:isSharedParameterSetName_Unique=$false
      #régle 0 : si un paramétre déclare une position, les autres peuvent ne pas en déclarer
