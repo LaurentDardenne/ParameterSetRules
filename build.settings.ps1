@@ -101,13 +101,13 @@ function Test-BOMFile{
         ForEach-Object  {
         Write-Verbose "Test BOM for '$($_.FullName)'"
         # create storage object
-        $EncodingInfo = 1 | Select FileName,Encoding,BomFound,Endian
+        $EncodingInfo = 1 | Select-Object FileName,Encoding,BomFound,Endian
         # store file base name (remove extension so easier to read)
         $EncodingInfo.FileName = $_.FullName
         # get full encoding object
         $Encoding = Get-DTWFileEncoding $_.FullName
         # store encoding type name
-        $EncodingInfo.Encoding = $EncodingTypeName = $Encoding.ToString().SubString($Encoding.ToString().LastIndexOf(".") + 1)
+        $EncodingInfo.Encoding = $Encoding.ToString().SubString($Encoding.ToString().LastIndexOf(".") + 1)
         # store whether or not BOM found
         $EncodingInfo.BomFound = "$($Encoding.GetPreamble())" -ne ""
         $EncodingInfo.Endian = ""
@@ -132,6 +132,252 @@ function Test-BOMFile{
         }|
         #PS v2 Big Endian plante la signature de script
         Where-Object {($_.Encoding -ne "UTF8Encoding") -or ($_.Endian -eq "Big")}
+}
+
+Function Find-ExternalModuleDependencies {
+<#
+    .SYNOPSIS
+     Détermine, selon le repository courant, le ou les modules externes dépendant.
+     Les noms de module retournés pourront être insérés dans la clé 'ExternalModuleDependencies' d'un manifest de module
+
+    .EXAMPLE
+     $ManifestPath='.\OptimizationRules.psd1'
+     $ModuleNames=Read-ModuleDependency $ManifestPath -AsHashTable
+     $EMD=Find-ExternalModuleDependencies $ModuleNames -Repository $PublishRepository
+#>
+  Param(
+      [ValidateNotNullOrEmpty()]
+     [System.Collections.Hashtable[]] $ModuleSpecification,
+
+       [ValidateNotNullOrEmpty()]
+     [String] $Repository
+)
+
+ [System.Collections.Hashtable[]] $Modules=$ModuleSpecification|ForEach-Object{$_.Clone()}
+
+ $EMD=@(
+     Foreach ($Module in $Modules) {
+        try {
+        # En cas d'erreur de module introuvable, Find-Module ne propose pas son nom dans une propriété de l'exception levée,
+        # on les traite donc un par un.
+        #
+        #Note :
+        # La recherche ne peut se faire sur le GUID (FQN) mais uniquement sur le nom ET un numéro de version.
+        # Il existe donc un risque minime de collision entre 2 repositories.
+        #
+        #Scénario :
+        # On suppose que les versions de production d'un module ne sont pas dispatchées entre les repositories
+        # PSGallery : Repository principal de production. Il est toujours déclaré.
+        # MyGet     : Repository secondaire de production public ou privé. Déclaré selon les besoins.
+        # DEVMyGet  : Repository secondaire de test public ou privé. Il devrait toujours être déclaré :
+        #              Validation de la chaîne de publication, test d'intégration.
+        #
+        #Seul les modules requis (RequiredModule) qui ne sont pas external sont installés implicitement par Install-Module,
+        # ceux indiqués external (ExternalModuleDependencies) doivent l'être explicitement.
+        #Dans Powershell une dépendances externe de module ne précise pas le repository cible, mais indique que la dépendance est dans un autre repository.
+        #
+        #Si on ne précise pas le paramètre -Repository avec Install-Module, Powershell installera le premier repository hébergeant le nom du module
+        # répondant aux critéres de recherche.
+
+        #
+        #Si aucun module ne correspond aux critéres de recherche portant sur une version, Find-Module ne renvoit rien.
+        #On ne sait donc pas différencier le cas où d'autres versions existent mais pas celle demandée et le cas où aucune version du module existe dans le repository.
+        # (Elle peut exister mais ailleurs). Le module sera alors considéré comme externe.
+        #
+        #Update-ModuleManifest ne complète pas le contenu de la clé -ExternalModuleDependencies mais remplace le contenu existant.
+
+        Write-Verbose  "Find-ExternalModuleDependencies : $($Module|Out-String)"
+        $Module.Add('Repository',$Repository)
+
+        Find-Module @Module -EA Stop > $null
+        } catch {
+            Write-Debug "Not found : $($Params|Out-String)"
+            if (($_.CategoryInfo -match '^ObjectNotFound') -and ($_.FullyQualifiedErrorId -match '^NoMatchFoundForCriteria') )
+            {
+                #Insert into ExternalModuleDependencies
+               Write-Output $Module.Name
+            }
+            else
+            {throw $_}
+        }
+     }
+ )
+ if ($EMD.Count -ne 0)
+ {
+    #todo bug:
+    #https://windowsserver.uservoice.com/forums/301869-powershell/suggestions/19210978-update-modulemanifest-externalmoduledependencies
+   if ($EMD.Count -eq 1)
+   { $EMD +=$EMD[0] }
+   Write-Verbose "ExternalModuleDependencies : $EMD"
+   Return $EMD
+ }
+}
+
+function Import-ManifestData {
+ #Read a .psd1 into a hashtable
+    [CmdletBinding()]
+    Param (
+        [Parameter(Mandatory = $true)]
+        [Microsoft.PowerShell.DesiredStateConfiguration.ArgumentToConfigurationDataTransformation()]
+        $Data
+    )
+    return $Data
+}
+
+Function Read-ModuleDependency {
+#Reads a module manifest and returns the contents of the RequiredModules key.
+# todo read NestedModules :
+# The RequiredModules and NestedModules lists of PSModuleInfo are used in preparing the dependency list of a module to be published.
+#
+#https://github.com/PowerShell/PSScriptAnalyzer/issues/546
+#With that in mind, this should only warn when:
+#
+# (a) a module manifest defines one or more NestedModules; and
+# (b) the same manifest does not define RootModule/ModuleToProcess; and
+# (c) one of the NestedModules is a script or binary module in the same folder as the manifest with the same name.
+
+   Param (
+     [Parameter(Mandatory = $true)]
+     $Data,
+
+     [switch] $AsHashTable,
+
+     [switch] $AsModuleSpecification
+  )
+
+ try {
+  $ErrorActionPreference='Stop'
+  $Manifest=Import-ManifestData $Data
+ } catch {
+     throw (New-Object System.Exception -ArgumentList "Unable to read the manifest $Data",$_.Exception)
+ }
+ if (($Manifest.RequiredModules -eq $null) -or ($Manifest.RequiredModules.Count -eq 0))
+ { Write-Verbose "RequireModules empty or unknown : $Data" }
+
+ Foreach ($ModuleInfo in $Manifest.RequiredModules)
+ {
+    #Microsoft.PowerShell.Commands.ModuleSpecification : 'RequiredVersion' need PS version 5.0
+    #Instead, one build splatting for Find-Module
+   Write-Debug "$($ModuleInfo|Out-String)"
+   if ($ModuleInfo -is [System.Collections.Hashtable])
+   {
+     $ModuleInfo.Add('Name',$ModuleInfo.ModuleName)
+     $ModuleInfo.Remove('ModuleName')
+     if ($ModuleInfo.Contains('ModuleVersion'))
+     {$ModuleInfo.Add('MinimumVersion',$ModuleInfo.ModuleVersion)}
+     $ModuleInfo.Remove('ModuleVersion')
+     $ModuleInfo.Remove('GUID')
+   }
+   else
+   {
+      $Name,$ModuleInfo=$ModuleInfo,@{}
+      $ModuleInfo.'Name'=$Name
+   }
+   if($AsHashTable)
+   { Write-Output $ModuleInfo }
+   elseif ($AsModuleSpecification)
+   { New-Object -TypeName Microsoft.PowerShell.Commands.ModuleSpecification -ArgumentList $ModuleInfo }
+   else
+   { New-Object PSObject -Property $ModuleInfo }
+ }
+}
+
+Function New-ScriptFileName {
+ [Diagnostics.CodeAnalysis.SuppressMessageAttribute("PSUseShouldProcessForStateChangingFunctions","",
+                                                    Justification="New-ScriptFileName do not change the system state, it create only a file name.")]
+  <#
+  .SYNOPSIS
+    Create a new file name from a type data file (.ps1xml).
+    The name of the new file is equal to the "$TargetDirectory\$($File.Basename).ps1"
+  .DESCRIPTION
+    Long description
+  .EXAMPLE
+    PS C:\> $NewFile=ConvertTo-ScriptFileName -File $File -TargetDirectory $TargetDirectory 
+    Explanation of what the example does todo
+  .INPUTS
+    [string]
+  .OUTPUTS
+    [string]
+  .NOTES
+    General notes
+  #>
+  param(
+    # Specifies a path to one or more .ps1xml type data file.
+     [Parameter(Mandatory=$true,
+                Position=0,
+                ValueFromPipeline=$true,
+                HelpMessage="Path to one or more .ps1Xml type data file.")]
+     [Alias("PSPath")]
+     [ValidateNotNullOrEmpty()]
+    [string] $File,
+
+     # The destination directory for news files. The default value is : $env:temp
+      [Parameter(Mandatory=$true)]
+     [ValidateNotNullOrEmpty()]
+    [string] $TargetDirectory
+  
+  )
+  process {
+    $ScriptFile=[System.IO.FileInfo]::New($File)
+    Write-output ("{0}\{1}{2}" -F $TargetDirectory,$ScriptFile.BaseName,'.ps1')
+  }
+}
+ 
+Function Export-ScriptMethod {
+  <#
+  .SYNOPSIS
+    Extract scriptblocs of a ScriptMethod from a type data file (.ps1Xml) and create a new file.
+    The name of the new file is equal to the "$TargetDirectory\$($File.Basename).ps1"
+    This file can be used with Invoke-ScriptAnalyzer.
+  .DESCRIPTION
+    Long description
+  .INPUTS
+    [string]
+  .OUTPUTS
+    [string]
+  .NOTES
+    General notes
+  #>
+  param(
+    # Specifies a path to one or more .ps1xml type data file.
+     [Parameter(Mandatory=$true,
+                Position=0,
+                ValueFromPipeline=$true,
+                HelpMessage="Path to one or more .ps1Xml type data file.")]
+     [Alias("PSPath")]
+     [ValidateNotNullOrEmpty()]
+    [string] $File,
+
+     # The destination directory for news files. The default value is : $env:temp
+     [ValidateNotNullOrEmpty()]
+    [string] $TargetDirectory=$env:TEMP
+  
+  )
+  process {
+    Write-Debug "Read '$File'"
+    [Xml]$Xml=Get-Content $File
+    #On suppose le fichier xml comme étant un fichier de type Powershell (ETS) valide
+    [int]$Count=0
+    
+    $NewFile=New-ScriptFileName -File $File -TargetDirectory $TargetDirectory
+    
+    $Script=New-Object System.Text.StringBuilder "# $File`r`n"
+    foreach ($Type in $Xml.Types.Type)
+    { 
+      foreach ($ScriptMethod in $Type.Members.ScriptMethod)
+      { 
+          Write-Debug "Extract ScriptMethod : '$($Type.Name).$($ScriptMethod.Name)' "
+          $Script.AppendLine("# $($Type.Name)") >$null
+          $Script.Append("Function Name$Count") >$null
+          $Script.AppendLine(".$($ScriptMethod.Name) {") >$null
+          $Script.AppendLine($ScriptMethod.Script+"`r`n}") >$null  
+          $count++
+      }
+    }
+    Write-Debug "Write '$NewFile'"
+    Set-Content -Value $Script.ToString() -Path $NewFile -Encoding UTF8
+    Write-output $NewFile
+ }
 }
 
 Properties {
@@ -459,6 +705,14 @@ Task TestBOMAfterAll -Precondition { $isTestBom } -requiredVariables OutDir {
   }
 }
 
+Task BeforeAnalyze {
+}
+
+Task AfterAnalyze {
+    #see BeforePublish
+    
+}
+
 # Executes after the Build task.
 Task AfterBuild  -Depends TestBOMAfterAll {
 }
@@ -536,14 +790,17 @@ Task BeforePublish -requiredVariables Projectname, OutDir, ModuleName, PublishRe
            Update-Metadata -Path $ManifestPath  -PropertyName ModuleVersion -Value $Version
         }
     }
-    #si on publie sur :
-    #     PSGallery, la clé n'est pas nécessaire, c'est le même repository
-    #     Myget, la clé est nécessaire, car ce n'est pas le même repository
-    if ($PublishRepository -ne 'PSGallery')
-    { 
-       #todo bug:
-       #https://windowsserver.uservoice.com/forums/301869-powershell/suggestions/19210978-update-modulemanifest-externalmoduledependencies
-       Update-ModuleManifest -path $ManifestPath -ExternalModuleDependencies 'PSScriptAnalyzer','PSScriptAnalyzer' 
+
+    $ModuleNames=Read-ModuleDependency $ManifestPath -AsHashTable
+     #ExternalModuleDependencies
+    if ($null -ne $ModuleNames)
+    {
+        $EMD=Find-ExternalModuleDependencies $ModuleNames -Repository $PublishRepository
+        if ($null -ne $EMD)
+        {
+          "Update ExternalModuleDependencies with $($EMD.Name) in '$ManifestPath'"
+          Update-ModuleManifest -path $ManifestPath -ExternalModuleDependencies $EMD
+        }
     }
 }
 

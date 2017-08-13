@@ -106,7 +106,10 @@ Task CoreStageFiles -requiredVariables ModuleOutDir, SrcRootDir {
 Task Build -depends Init, Clean, BeforeBuild, StageFiles, Analyze, Sign, AfterBuild {
 }
 
-Task Analyze -depends StageFiles `
+Task Analyze -depends BeforeAnalyze, CoreAnalyze, AfterStageFiles {
+}
+
+Task CoreAnalyze -depends StageFiles `
              -requiredVariables ModuleOutDir, ScriptAnalysisEnabled, ScriptAnalysisFailBuildOnSeverityLevel, ScriptAnalyzerSettingsPath {
     if (!$ScriptAnalysisEnabled) {
         "Script analysis is not enabled. Skipping $($psake.context.currentTaskName) task."
@@ -122,7 +125,7 @@ Task Analyze -depends StageFiles `
 
     #TODO next version PSSA https://github.com/PowerShell/PSScriptAnalyzer/issues/675
     $analysisResult = Invoke-ScriptAnalyzer -Path $ModuleOutDir -Settings $ScriptAnalyzerSettingsPath -CustomRulePath $PSSACustomRules -IncludeDefaultRules -Recurse  -Verbose:($VerbosePreference -eq 'Continue')
-    $analysisResult | Format-Table
+    $analysisResult | Select-Object Severity,RuleName,Message,Line,ScriptPath
     switch ($ScriptAnalysisFailBuildOnSeverityLevel) {
         'None' {
             return
@@ -258,7 +261,7 @@ Task GenerateMarkdown -requiredVariables DefaultLocale, DocsRootDir, ModuleName,
                          -WithModulePage -ErrorAction SilentlyContinue -Verbose:($VerbosePreference -eq 'Continue') > $null
     }
     finally {
-        Remove-Module $ModuleName
+        Remove-Module $ModuleName -Force
     }
 }
 
@@ -419,7 +422,7 @@ Task Test -depends Build -requiredVariables TestRootDir, ModuleName, CodeCoverag
     }
     finally {
         Microsoft.PowerShell.Management\Pop-Location
-        Remove-Module $ModuleName -ErrorAction SilentlyContinue
+        Remove-Module $ModuleName -ErrorAction SilentlyContinue -Force
     }
 }
 
