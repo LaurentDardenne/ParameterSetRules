@@ -1,17 +1,17 @@
 ﻿Function TestParameterSet {
   param(
     [parameter(parametersetname="text",mandatory=$false)]
-    [switch]$mytext,
+    [switch]$MyText,
 
     [parameter(parametersetname="Text",mandatory=$false)]
-    [switch]$yourtext,
+    [switch]$YourTtext,
 
     [parameter(parametersetname="TEXT",mandatory=$false)]
-    [switch]$hertext,
+    [switch]$HerText,
 
     [parameter(parametersetname="notext",mandatory=$false)]
-    [switch]$notext
+    [switch]$NoText
   )
  
-  Write-host "ParameterSetName = $($PsCmdlet.ParameterSetName)"
+  Write-Verbose "ParameterSetName = $($PsCmdlet.ParameterSetName)"
 }

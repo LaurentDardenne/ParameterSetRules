@@ -1,8 +1,8 @@
 ﻿Function TestParameterSet{
   [CmdletBinding()]
   Param (
-    [Switch] $A
+    [Switch] $Variable
   )
   
-  Write-Host "Traitement..."
+  Write-Verbose "Traitement..."
 }

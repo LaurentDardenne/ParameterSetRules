@@ -1,3 +1,3 @@
 ﻿Function TestParameterSet{
-  Write-Host "Traitement..."
+  Write-Verbose "Traitement..."
 }

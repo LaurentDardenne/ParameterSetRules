@@ -2,17 +2,17 @@
   [CmdletBinding(defaultparametersetname = "__AllParameterSets")]
   Param (
     [Parameter(ParameterSetName="Fonctionnalite1")]
-   [Switch] $A,
+   [Switch] $Avariable,
     [Parameter(ParameterSetName="Fonctionnalite2")]
-   [Switch] $B,
+   [Switch] $Bvariable,
     [Parameter(ParameterSetName="Fonctionnalite3")]
-   [Switch] $C,
+   [Switch] $Cvariable,
     [Parameter(ParameterSetName="Fonctionnalite1")]
     [Parameter(ParameterSetName="Fonctionnalite2")]
     [Parameter(ParameterSetName="Fonctionnalite3")]
-   [Switch] $D,
+   [Switch] $Dvariable,
     [Parameter(parametersetname="Fonctionnalite2")]
-   [Switch] $E
+   [Switch] $Evariable
 
    )
   Write-Host "Traitement..."

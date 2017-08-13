@@ -1,5 +1,5 @@
 ﻿Function TestParameterSet{
   Param ()
   
-  Write-Host "Traitement..."
+  Write-Verbose "Traitement..."
 }

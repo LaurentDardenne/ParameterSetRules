@@ -2,7 +2,7 @@
   [CmdletBinding()]
   Param (
     [Parameter(ParameterSetName="Name1")]
-   [Switch] $A
+   [Switch] $Variable
    )
-  Write-Host "Traitement..."
+ Write-Verbose "Traitement..."
 }
