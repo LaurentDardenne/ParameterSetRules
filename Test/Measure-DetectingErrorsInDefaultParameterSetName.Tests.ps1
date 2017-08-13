@@ -141,15 +141,6 @@ Describe "Rule DetectingErrorsInDefaultParameterSetName " {
         $Results[0].Message|should be ($RulesMessage.W_DpsAvoid_AllParameterSets_Name -F 'TestParameterSet')        
         
       }  
-
-      It "Function with 2 parameters and 2 ParameterSet 'Name1','Name2', cmdletbinding not filled." {
-        $FileName="$Path\Function with 2 parameters and 2 ParameterSet 'Name1','Name2', cmdletbinding not filled.ps1"
-        
-        $Results = Invoke-ScriptAnalyzer -Path $Filename -CustomRulePath $CustomRulePath
-        $Results.Count | should be (1)
-        $Results[0].Severity| should be 'Warning'
-        $Results[0].Message|should be ($RulesMessage.W_DpsNotDeclared -F 'TestParameterSet')
-      }             
     }#context
 
 
