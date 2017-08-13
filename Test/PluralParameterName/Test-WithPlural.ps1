@@ -8,7 +8,7 @@
   $People,
   $Indexes,
   $Axes,
-  $criteria
+  $Criteria
 )
 
 Write-verbose "Test-WithoutPlural"
