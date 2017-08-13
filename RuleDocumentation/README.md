@@ -15,3 +15,7 @@
 |[AvoidDuplicateParameterAttribut](./AvoidDuplicateParameterAttribut.md) | Error |
 |[ProvideParameterWithSequentialPosition](./ProvideParameterWithSequentialPosition.md) | Error |
 |[ProvideValidNameForParameter](./ProvideValidNameForParameter.md) | Error |
+|[UseSingularNounForParameter](./UseSingularNounForParameter.md) | Warning |
+|[UsePascalCaseForParameterName](./UsePascalCaseForParameterName.md) | Information |
+
+
