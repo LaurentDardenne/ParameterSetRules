@@ -2,11 +2,11 @@
    
   Param (
     [Parameter(Position=2)]
-   [string] $A,
+   [string] $Avariable,
     [Parameter(Position=3)]
-   [string] $B,
+   [string] $Bvariable,
     [Parameter(Position=4)]
-   [string] $C
+   [string] $Cvariable
    )
-   Write-Host"ParameterSetName =$($PsCmdlet.ParameterSetName)"
+   Write-Verbose "ParameterSetName =$($PsCmdlet.ParameterSetName)"
 }

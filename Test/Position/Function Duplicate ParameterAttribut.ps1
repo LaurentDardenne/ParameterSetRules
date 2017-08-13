@@ -5,20 +5,20 @@
   Param ( 
     [Parameter(Position=1)]
     [Parameter(Position=1,ParametersetName="F2")]
-   [Switch] $A,
+   [Switch] $Avariable,
 
     [Parameter(Position=2,ParameterSetname="F2")]
     [Parameter(Position=2,ParameterSetname="F2")]
-   [Switch] $B,
+   [Switch] $Bvariable,
 
     [Parameter(Position=0)]
     [Parameter(Position=0,parameterSetName="F3")]
     [Parameter(Position=1)]
-   [Switch] $C,
+   [Switch] $Cvariable,
    
     [Parameter(ParameterSetname="F2")]
     [Parameter(Position=2,ParameterSetname="F2")]
-   [Switch] $D   
+   [Switch] $Dvariable   
   )
-  Write-Host "Traitement..."
+  Write-Verbose "Traitement..."
 }

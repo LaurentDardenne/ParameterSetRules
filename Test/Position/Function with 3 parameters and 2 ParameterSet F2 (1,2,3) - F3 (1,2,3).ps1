@@ -2,18 +2,18 @@
   [CmdletBinding(DefaultParameterSetName = "F2")]         
   Param (
     [Parameter(Position=1,ParametersetName="F2")]
-   [string] $A,
+   [string] $Avariable,
     [Parameter(Position=2,ParametersetName="F2")]
-   [string] $B,
+   [string] $Bvariable,
     [Parameter(Position=3,ParametersetName="F2")]
-   [string] $C,
+   [string] $Cvariable,
    
     [Parameter(Position=1,ParametersetName="F3")]
-   [string] $D,
+   [string] $Dvariable,
     [Parameter(Position=2,ParametersetName="F3")]
-   [string] $E,
+   [string] $Evariable,
     [Parameter(Position=3,ParametersetName="F3")]
-   [string] $F   
+   [string] $Fvariable   
    )
-   Write-Host "ParameterSetName =$($PsCmdlet.ParameterSetName)"
+   Write-Verbose "ParameterSetName =$($PsCmdlet.ParameterSetName)"
 }

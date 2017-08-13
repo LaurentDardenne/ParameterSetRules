@@ -1,15 +1,15 @@
 ﻿Function TestParameterSet{
   Param (
     [Parameter()]
-   [Switch] $A,
+   [Switch] $Avariable,
    
     [Parameter(Mandatory)]
-   [Switch] $B,
+   [Switch] $Bvariable,
    
     [Parameter(Position=1)]
-   [Switch] $C,
+   [Switch] $Cvariable,
    
-    $D
+    $Dvariable
    )
-  Write-Host "Traitement..."
+  Write-Verbose "Traitement..."
 }

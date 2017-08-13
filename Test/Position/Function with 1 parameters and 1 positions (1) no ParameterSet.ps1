@@ -1,7 +1,7 @@
 ﻿Function TestParameterSet{
   Param (
     [Parameter(Position=1)]
-   [string] $A
+   [string] $Avariable
    )
- Write-Host "Test"
+ Write-Verbose "Test"
 }

@@ -2,5 +2,5 @@
   [CmdletBinding()]
   Param ()
   
- Write-Host "Traitement..."
+ Write-Verbose "Traitement..."
 }

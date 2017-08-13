@@ -26,7 +26,7 @@
     ${global:Test} # Scope
   )#param
  
- Write-Host 'suite'    
+ Write-Verbose 'suite'    
  $psboundparameters         
 }
 

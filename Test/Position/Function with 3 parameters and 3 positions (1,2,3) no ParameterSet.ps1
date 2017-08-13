@@ -1,11 +1,11 @@
 ﻿Function TestParameterSet{
   Param (
     [Parameter(Position=1)]
-   [string] $A,
+   [string] $Avariable,
     [Parameter(Position=2)]
-   [string] $B,
+   [string] $Bvariable,
     [Parameter(Position=3)]
-   [string] $C
+   [string] $Cvariable
    )
-  Write-Host "Test"
+  Write-Verbose "Test"
 }

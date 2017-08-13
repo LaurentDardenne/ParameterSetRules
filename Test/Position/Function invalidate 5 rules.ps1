@@ -4,52 +4,52 @@
   
   Param ( 
     [Parameter(Position=3,ParametersetName="F2")]
-   [Switch] $A,
+   [Switch] $Avariable,
     [Parameter(Position=2,ParameterSetname="F2")]
-   [Switch] $B,
+   [Switch] $Bvariable,
     [Parameter(Position=0,parameterSetName="F3")]
-   [Switch] $C,
+   [Switch] $Cvariable,
    
     [Parameter(Position=1,ParameterSetName="F2")]
     [Parameter(Position=2,ParameterSetName="F3")]
-   [Switch] $D,
+   [Switch] $Dvariable,
     [Parameter(Position=1,ParameterSetName="F3")]
-   [Switch] $E,
+   [Switch] $Evariable,
 
-   [Switch] $F,
+   [Switch] $Fvariable,
     
     [Parameter(Position=3)]
-   [Int] $G=10,
+   [Int] $Gvariable=10,
    
     [Parameter(ParameterSetName="F4")]
-   [Switch] $H,
+   [Switch] $Hvariable,
     [Parameter(ParameterSetName="F4")]
-   [Switch] $I,
+   [Switch] $Ivariable,
     [Parameter(ParameterSetName="F4")]
-    $J,
+    $Jvariable,
 
     [Parameter(Position=1,ParameterSetName="F5")]
-   [Switch] $k,
+   [Switch] $Kvariable,
     [Parameter(Position=2,ParameterSetName="F5")]
-   [Switch] $l,
+   [Switch] $Lvariable,
     [Parameter(Position=1,ParameterSetName="F5")]
-    $m ,
+    $Mvariable ,
     
     [Parameter(Position=5,ParameterSetName="F6")]
-   [Switch] $n,
+   [Switch] $Nvariable,
     [Parameter(Position=4,ParameterSetName="F6")]
-   [Switch] $o,
+   [Switch] $Ovariable,
     [Parameter(Position=3,ParameterSetName="F6")]
-    $p,
+    $Pvariable,
     
     [Parameter(Position=1)]
     [Parameter(ParameterSetName="F6")]
-    $q,
+    $Qvariable,
     
     [Parameter(Position=-3,ParameterSetName="F7")]
     ${32Bits},
     
     [Parameter()]
-    ${S}
+    ${Svariable}
    )
 }
