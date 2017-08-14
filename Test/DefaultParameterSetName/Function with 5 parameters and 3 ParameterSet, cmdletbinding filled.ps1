@@ -6,13 +6,13 @@
     [Parameter(ParameterSetName="Fonctionnalite2")]
    [Switch] $Bvariable,
     [Parameter(ParameterSetName="Fonctionnalite3")]
-   [Switch] $Cvaraible,
+   [Switch] $Cvariable,
     [Parameter(ParameterSetName="Fonctionnalite1")]
     [Parameter(ParameterSetName="Fonctionnalite2")]
     [Parameter(ParameterSetName="Fonctionnalite3")]
    [Switch] $Dvariable,
     [Parameter(ParameterSetName="Fonctionnalite2")]
-   [Switch] $Evaraible
+   [Switch] $Evariable
 
    )
   Write-Verbose "Traitement..."
