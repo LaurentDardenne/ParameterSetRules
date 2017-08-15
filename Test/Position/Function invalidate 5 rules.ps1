@@ -1,4 +1,7 @@
 ﻿Function TestParameterSet{
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Measure-ParameterNameShouldBePascalCase",
+                                                     "", 
+                                                     Justification="This test function does not target the PascalCase rule")]         
   [CmdletBinding(defaultparameterSetName = "F3")]
   [CmdletBinding(defaultparameterSetName = "F3")]  
   
@@ -47,7 +50,7 @@
     $Qvariable,
     
     [Parameter(Position=-3,ParameterSetName="F7")]
-    ${32Bits},
+    ${32Bit},
     
     [Parameter()]
     ${Svariable}
