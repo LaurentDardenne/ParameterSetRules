@@ -12,7 +12,8 @@
    $Class_WMI,
    $Class_Wmia,
    $_variable,
-   $variable_
+   $variable_,
+   $32Bit
  )
  Write-verbose 'Test-PascalCase'         
 }
