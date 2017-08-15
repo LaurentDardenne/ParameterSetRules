@@ -50,7 +50,7 @@ $script:PluralSrvc =[System.Data.Entity.Design.PluralizationServices.Pluralizati
 #<DEFINE %DEBUG%>
 function TraceHeader {
   param($Name)
-   $DebugLogger.PSDebug("$('-'*40)")
+   $DebugLogger.PSDebug("$('-'*40)") 
    $DebugLogger.PSDebug($Name)
 }
 #<UNDEF %DEBUG%> 
@@ -63,10 +63,10 @@ Function NewCorrectionExtent{
     [ValidateNotNullOrEmpty()]
    $Description
  )
- $DebugLogger.PSDebug("Extent='$Extent'")
+ $DebugLogger.PSDebug("Extent='$Extent'")  #<%REMOVE%>
  if ($null -eq $Extent) 
  { 
-   $DebugLogger.Error("NewDiagnosticRecord $Rulename") 
+   $DebugLogger.Error("NewDiagnosticRecord $Rulename")  #<%REMOVE%>
    throw "NewDiagnosticRecord : $Rulename :`$Extent est `$null"
  }
 [Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.CorrectionExtent]::new(
@@ -162,7 +162,7 @@ Function Get-ScriptBlockType {
       $Parameters=$ParamBlock.Parameters
     }  
     $DebugLogger.PSDebug("Parameters.Count: $($Parameters.Count)") #<%REMOVE%>
-    $DebugLogger.PSDebug(" Get-ScriptBlockTyp ParamBlock est `$null: $($null -eq $Paramblock)")
+    $DebugLogger.PSDebug(" Get-ScriptBlockTyp ParamBlock est `$null: $($null -eq $Paramblock)")  #<%REMOVE%>
     return  [pscustomobject]@{
               PSTypeName='SBType';
               Parent=$Parent;
