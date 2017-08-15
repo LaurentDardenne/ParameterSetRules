@@ -1,4 +1,9 @@
-﻿2016-09-29    Version 0.4.0
+﻿2017-08-13    Version 1.0.0
+ Add rule 'Measure-ParameterNameShouldBePascalCase' and 'Measure-AvoidPluralNameForParameter'
+ 
+ Remove rule UsePascalCaseForParameterName
+
+2016-09-29    Version 0.4.0
 Fix the type of Ast (FunctionDefinitionAst to ScriptBlockAst)
 
 2016-09-25    Version 0.3.0
