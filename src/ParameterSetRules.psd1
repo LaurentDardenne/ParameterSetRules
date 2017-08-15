@@ -105,7 +105,7 @@ PrivateData = @{
          LicenseUri =  'https://creativecommons.org/licenses/by-nc-sa/4.0/'
 
           # A URL to the main website for this project.
-         ProjectUri='https://github.com/LaurentDardenne/PSScriptAnalyzerRules'
+         ProjectUri='https://github.com/LaurentDardenne/ParameterSetRules'
           # A URL to an icon representing this module.
          IconUri='https://github.com/LaurentDardenne/ParameterSetRules/blob/master/icon/ParameterSetRules.png'
 
