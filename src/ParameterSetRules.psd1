@@ -99,7 +99,7 @@ PrivateData = @{
 
     PSData = @{
           # Tags applied to this module. These help with module discovery in online galleries.
-         Tags = @('PSScriptAnalyzer','PSScriptAnalyzerRule', 'Analyze','Rule','ParameterSet' )
+         Tags = @('PSScriptAnalyzer','PSScriptAnalyzerRule', 'Analyze','Rule','ParameterSet','PascalCase' )
 
           # A URL to the license for this module.
          LicenseUri =  'https://creativecommons.org/licenses/by-nc-sa/4.0/'
