@@ -22,4 +22,10 @@ E_ParameterNameInvalidByOperator=Il ne doit pas contenir un symbole d'opérateur
 E_ParameterNameInvalidBySpace=Il ne doit pas débuter ou se terminer par des espaces.
 E_ParameterNameInvalidByPSWildcard=Il ne doit pas contenir des jokers Powershell ('*', '?', '[', ']').
 E_ConflictDuplicateParameterAttribut={0} : Conflit détecté pour le paramètre '{1}' dans le jeu '{2}' : un attribut [Parameter()] ne peut être dupliqué ou contenir des déclarations contradictoires.
+
+  # Measure-AvoidPluralNameForParameter
+I_ParameterNameUsePlural=The parameter name '{0}' use plural. Change to singular '{1}'.
+  
+  # Measure-ParameterNameShouldBePascalCase
+I_UsePascalCaseForParameterName=The parameter name '{0}' dot not use the Pascal case namming convention. In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name.
 '@
