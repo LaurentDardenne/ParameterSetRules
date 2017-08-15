@@ -73,7 +73,9 @@ RequiredModules=@(
 # Functions to export from this module
 FunctionsToExport = @(
  'Measure-DetectingErrorsInParameterList',
- 'Measure-DetectingErrorsInDefaultParameterSetName'
+ 'Measure-DetectingErrorsInDefaultParameterSetName',
+ 'Measure-ParameterNameShouldBePascalCase',
+ 'Measure-AvoidPluralNameForParameter'
  #todo Measure-DetectingErrorsInOutputAttribut
 )
 
