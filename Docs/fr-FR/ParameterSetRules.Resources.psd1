@@ -14,13 +14,6 @@ W_PsnParametersMustBeginByZeroOrOne={0} : '{1}' la position des paramètres doit
 E_PsnPositionsAreNotSequential={0} : Le jeu de paramètres '{1}' contient des nombres de positions qui ne forment pas une suite ordonnées : {2}
 E_PsnMustHavePositivePosition={0} : Dans le jeu de paramètres '{1}', le paramètre '{2}' doit avoir un position positive ({3})
 E_PsnDuplicatePosition={0} : Le jeu de paramètres '{1}' contient une ou des positions dupliquées {2} pour les paramètres {3}
-
-E_ParameterNameContainsInvalidCharacter={0} : Le nom du paramètre '{1}' est invalide :
-E_ParameterNameInvalidByNumber=Il ne doit pas débuter par un ou des chiffres.
-E_ParameterNameInvalidByDot=Il ne doit pas contenir le caractère point ('.').
-E_ParameterNameInvalidByOperator=Il ne doit pas contenir un symbole d'opérateur Powershell.
-E_ParameterNameInvalidBySpace=Il ne doit pas débuter ou se terminer par des espaces.
-E_ParameterNameInvalidByPSWildcard=Il ne doit pas contenir des jokers Powershell ('*', '?', '[', ']').
 E_ConflictDuplicateParameterAttribut={0} : Conflit détecté pour le paramètre '{1}' dans le jeu '{2}' : un attribut [Parameter()] ne peut être dupliqué ou contenir des déclarations contradictoires.
 
   # Measure-AvoidPluralNameForParameter
