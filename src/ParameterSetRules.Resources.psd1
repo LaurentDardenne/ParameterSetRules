@@ -22,6 +22,10 @@ E_ParameterNameInvalidByOperator=it must not contains a operator token.
 E_ParameterNameInvalidBySpace=it must not have begun or endung by spaces.
 E_ParameterNameInvalidByPSWildcard=it must not contains Powershell wildcard.
 E_ConflictDuplicateParameterAttribut={0} : Conflict detected for parameter '{1}' in the parameterset '{2}': an attribute [Parameter()] can not be duplicated or contain contradictory statements.
-E_ParameterNameUsePlural=The parameter name '{0}' use plural. Change to singular '{1}'.
+
+  # Measure-AvoidPluralNameForParameter
+I_ParameterNameUsePlural=The parameter name '{0}' use plural. Change to singular '{1}'.
+  
+  # Measure-ParameterNameShouldBePascalCase
 E_UsePascalCaseForParameterName=The parameter name '{0}' dot not use the Pascal case namming convention. In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name.
 '@
