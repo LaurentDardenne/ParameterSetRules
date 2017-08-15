@@ -27,5 +27,5 @@ E_ConflictDuplicateParameterAttribut={0} : Conflict detected for parameter '{1}'
 I_ParameterNameUsePlural=The parameter name '{0}' use plural. Change to singular '{1}'.
   
   # Measure-ParameterNameShouldBePascalCase
-E_UsePascalCaseForParameterName=The parameter name '{0}' dot not use the Pascal case namming convention. In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name.
+I_UsePascalCaseForParameterName=The parameter name '{0}' dot not use the Pascal case namming convention. In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name.
 '@
