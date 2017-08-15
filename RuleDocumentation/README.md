@@ -1,20 +1,22 @@
 ﻿# Parameter set rules
 
-| Rule | Severity |
+| SuppressMessage | Severity | Rule name |
 |------|----------------------------------|
-|[AvoidMixingTheCharacterCase](./AvoidMixingTheCharacterCase.md) | Error |
-|[AvoidUsingTheNameAllParameterSets](./AvoidUsingTheNameAllParameterSets.md) | Warning |
-|[AvoidInunsedDefaultParameterSet](./AvoidInunsedDefaultParameterSet.md) | Warning |
-|[ProvideDefaultParameterSetName](./ProvideDefaultParameterSetName.md) | Warning |
-|[AvoidUnnecessaryDefaultParameterSet](./AvoidUnnecessaryDefaultParameterSet.md) | Information |
-|[AvoidUsingRedundantParameterSetName](./AvoidUsingRedundantParameterSetName.md) | Information |
-|[ProvideParameterWithPositivePosition](./ProvideParameterWithPositivePosition.md) | Error |
-|[AvoidDuplicateParameterPosition](./AvoidDuplicateParameterPosition.md) | Error |
-|[AvoidUsingParameterNameBegunWithNumber](./AvoidUsingParameterNameBegunWithNumber.md) | Warning |
-|[AvoidUsingUnnecessaryParameterAttribut](./AvoidUsingUnnecessaryParameterAttribut.md) | Warning |
-|[AvoidDuplicateParameterAttribut](./AvoidDuplicateParameterAttribut.md) | Error |
-|[ProvideParameterWithSequentialPosition](./ProvideParameterWithSequentialPosition.md) | Error |
-|[UseSingularNounForParameter](./UseSingularNounForParameter.md) | Warning |
-|[UsePascalCaseForParameterName](./UsePascalCaseForParameterName.md) | Information |
+|[AvoidMixingTheCharacterCase](./AvoidMixingTheCharacterCase.md) | Error | Measure-DetectingErrorsInDefaultParameterSetName |
+|[AvoidUsingTheNameAllParameterSets](./AvoidUsingTheNameAllParameterSets.md) | Warning | Measure-DetectingErrorsInDefaultParameterSetName |
+|[AvoidInunsedDefaultParameterSet](./AvoidInunsedDefaultParameterSet.md) | Warning | Measure-DetectingErrorsInDefaultParameterSetName |
+|[ProvideDefaultParameterSetName](./ProvideDefaultParameterSetName.md) | Warning | Measure-DetectingErrorsInDefaultParameterSetName |
+|[AvoidUnnecessaryDefaultParameterSet](./AvoidUnnecessaryDefaultParameterSet.md) | Information | Measure-DetectingErrorsInDefaultParameterSetName |
+|[AvoidUsingRedundantParameterSetName](./AvoidUsingRedundantParameterSetName.md) | Information | Measure-DetectingErrorsInDefaultParameterSetName |
+
+|[ProvideParameterWithPositivePosition](./ProvideParameterWithPositivePosition.md) | Error | Measure-DetectingErrorsInParameterList |
+|[AvoidDuplicateParameterPosition](./AvoidDuplicateParameterPosition.md) | Error | Measure-DetectingErrorsInParameterList |
+|[PsnParametersMustBeginByZeroOrOne](./PsnParametersMustBeginByZeroOrOne.md) | Warning | Measure-DetectingErrorsInParameterList |
+|[AvoidUsingUnnecessaryParameterAttribut](./AvoidUsingUnnecessaryParameterAttribut.md) | Warning | Measure-DetectingErrorsInParameterList |
+|[AvoidDuplicateParameterAttribut](./AvoidDuplicateParameterAttribut.md) | Error | Measure-DetectingErrorsInParameterList |
+|[ProvideParameterWithSequentialPosition](./ProvideParameterWithSequentialPosition.md) | Error | Measure-DetectingErrorsInParameterList |
+
+|[Measure-AvoidPluralNameForParameter](./Measure-AvoidPluralNameForParameter.md) | Warning | Measure-AvoidPluralNameForParameter|
+|[Measure-ParameterNameShouldBePascalCase](./Measure-ParameterNameShouldBePascalCase.md) | Information | Measure-ParameterNameShouldBePascalCase|
 
 
