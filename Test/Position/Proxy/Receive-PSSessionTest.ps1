@@ -1,4 +1,12 @@
 ﻿Function Receive-PSSessionTest {
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Measure-ParameterNameShouldBePascalCase",
+                                                     "", 
+                                                     Justification="This test function does not target the PascalCase rule")]
+                                                     
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Measure-AvoidPluralNameForParameter",
+                                                     "", 
+                                                     Justification="This test function does not target the 'plural name' rule")]    
+                                                              
 [CmdletBinding(DefaultParameterSetName='Session', SupportsShouldProcess=$true, ConfirmImpact='Medium', HelpUri='http://go.microsoft.com/fwlink/?LinkID=217037', RemotingCapability='OwnedByCommand')]
 param(
     [Parameter(ParameterSetName='Session', Mandatory=$true, Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)]

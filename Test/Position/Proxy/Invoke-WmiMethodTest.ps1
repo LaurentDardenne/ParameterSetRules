@@ -3,6 +3,14 @@
 # Invoke-WmiMethodTest -Name 'test' # -> $Class mandatory 
  
 Function Invoke-WmiMethodTest {
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Measure-ParameterNameShouldBePascalCase",
+                                                     "", 
+                                                     Justification="This test function does not target the PascalCase rule")]
+                                                     
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Measure-AvoidPluralNameForParameter",
+                                                     "", 
+                                                     Justification="This test function does not target the 'plural name' rule")]    
+                                                     
 [CmdletBinding(DefaultParameterSetName='class', SupportsShouldProcess=$true, ConfirmImpact='Medium', HelpUri='http://go.microsoft.com/fwlink/?LinkID=113346', RemotingCapability='OwnedByCommand')]
 param(
     [Parameter(ParameterSetName='object', Mandatory=$true, ValueFromPipeline=$true)]

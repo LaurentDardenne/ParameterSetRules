@@ -1,4 +1,11 @@
 ﻿Function Add-AccessControlEntryTest {
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Measure-ParameterNameShouldBePascalCase",
+                                                     "", 
+                                                     Justification="This test function does not target the PascalCase rule")]
+                                                     
+[Diagnostics.CodeAnalysis.SuppressMessageAttribute( "Measure-AvoidPluralNameForParameter",
+                                                     "", 
+                                                     Justification="This test function does not target the 'plural name' rule")]         
 [CmdletBinding(DefaultParameterSetName='FileRights',SupportsShouldProcess=$true, ConfirmImpact='Medium')]
 param(
     [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
