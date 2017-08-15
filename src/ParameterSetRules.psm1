@@ -481,7 +481,7 @@ function TestSequentialAndBeginByZeroOrOne{
    if (($SortedPositions[0] -gt 1) -and ($script:isSharedParameterSetName_Unique -or ($PSN -ne $script:SharedParameterSetName)))  
    { 
      $DebugLogger.PSDebug("`tRule : The positions of parameters must begin by zero or one -> $($SortedPositions[0])") #<%REMOVE%>
-     NewDiagnosticRecord 'AvoidUsingParameterNameBegunWithNumber' ($RulesMsg.W_PsnParametersMustBeginByZeroOrOne -F $NameOfBlock,$PSN,"$SortedPositions") Warning $Ast
+     NewDiagnosticRecord 'PsnParametersMustBeginByZeroOrOne' ($RulesMsg.W_PsnParametersMustBeginByZeroOrOne -F $NameOfBlock,$PSN,"$SortedPositions") Warning $Ast
    }
    if (-not $iDusplicate) 
    {
