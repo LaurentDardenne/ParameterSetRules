@@ -24,8 +24,9 @@ E_ParameterNameInvalidByPSWildcard=Il ne doit pas contenir des jokers Powershell
 E_ConflictDuplicateParameterAttribut={0} : Conflit détecté pour le paramètre '{1}' dans le jeu '{2}' : un attribut [Parameter()] ne peut être dupliqué ou contenir des déclarations contradictoires.
 
   # Measure-AvoidPluralNameForParameter
-I_ParameterNameUsePlural=The parameter name '{0}' use plural. Change to singular '{1}'.
+I_ParameterNameUsePlural=Le nom du paramètre '{0}' est au pluriel. Utilisez le singulier '{1}'.
   
   # Measure-ParameterNameShouldBePascalCase
-I_UsePascalCaseForParameterName=The parameter name '{0}' dot not use the Pascal case namming convention. In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name.
+I_UsePascalCaseForParameterName=Le nom du paramètre '{0}' n'utilse pas la conventio de nommage Pascal Case. 
+In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name. En d'autres termes, la première lettre de chaque mot constituant le nom du paramètre doit être en majuscule, y compris la première lettre du nom.
 '@
