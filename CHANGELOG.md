@@ -1,7 +1,15 @@
-﻿2017-08-13    Version 1.0.0
- Add rule 'Measure-ParameterNameShouldBePascalCase' and 'Measure-AvoidPluralNameForParameter'
+﻿2017-08-28    Version 1.0.0
+ Add rules :
+   Measure-ParameterNameShouldBePascalCase 
+   Measure-AvoidPluralNameForParameter
+   AvoidUsingMandoryParameterWithDefaultValue,
+   MissingArgumentToManageIncomingPipelineObject 
+   MissingProcessBlock
  
- Remove rule UsePascalCaseForParameterName
+ Remove rule UsePascalCaseForParameterName  (The Measure-ParameterNameShouldBePascalCase rule covers these cases)
+
+ Change the dependency on the PSScriptAnalyzer module to the version 1.16.0
+ Change the dependency on the Log4Posh module to the version 2.2.0 (only for the development)
 
 2016-09-29    Version 0.4.0
 Fix the type of Ast (FunctionDefinitionAst to ScriptBlockAst)
