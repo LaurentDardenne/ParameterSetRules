@@ -14,7 +14,13 @@
 |[AvoidUsingUnnecessaryParameterAttribut](./AvoidUsingUnnecessaryParameterAttribut.md) | Warning | Measure-DetectingErrorsInParameterList |
 |[AvoidDuplicateParameterAttribut](./AvoidDuplicateParameterAttribut.md) | Error | Measure-DetectingErrorsInParameterList |
 |[ProvideParameterWithSequentialPosition](./ProvideParameterWithSequentialPosition.md) | Error | Measure-DetectingErrorsInParameterList |
-|[Measure-AvoidPluralNameForParameter](./Measure-AvoidPluralNameForParameter.md) | Warning | Measure-AvoidPluralNameForParameter|
+|[AvoidUsingMandoryParameterWithDefaultValue](./AvoidUsingMandoryParameterWithDefaultValue.md) | Warning | Measure-DetectingErrorsInParameterList |
+|[Measure-AvoidPluralNameForParameter](./Measure-AvoidPluralNameForParameter.md) | Information | Measure-AvoidPluralNameForParameter|
 |[Measure-ParameterNameShouldBePascalCase](./Measure-ParameterNameShouldBePascalCase.md) | Information | Measure-ParameterNameShouldBePascalCase |
+
+|[AvoidUsingMandoryParameterWithDefaultValue](./AvoidUsingMandoryParameterWithDefaultValue.md) | Warning | Measure-DetectingErrorsInParameterList |
+|[MissingArgumentToManageIncomingPipelineObject](./MissingArgumentToManageIncomingPipelineObject.md) | Warning | Measure-DetectingErrorsInParameterList |
+|[MissingProcessBlock](./MissingProcessBlock.md) | Error | Measure-DetectingErrorsInParameterList |
+
 
 
