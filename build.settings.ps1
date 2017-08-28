@@ -292,7 +292,7 @@ Function New-ScriptFileName {
   .DESCRIPTION
     Long description
   .EXAMPLE
-    PS C:\> $NewFile=ConvertTo-ScriptFileName -File $File -TargetDirectory $TargetDirectory 
+    PS C:\> $NewFile=New-ScriptFileName -File $File -TargetDirectory $TargetDirectory 
     Explanation of what the example does todo
   .INPUTS
     [string]
@@ -393,6 +393,7 @@ Properties {
     # 'Debug' : Do not change anything
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '')]
     [ValidateSet('Release','Debug')]  $BuildConfiguration='Release'
+    #[ValidateSet('Release','Debug')]  $BuildConfiguration='Debug'
 
     #To manage the ApiKey differently
     [System.Diagnostics.CodeAnalysis.SuppressMessage('PSUseDeclaredVarsMoreThanAssigments', '')]
