@@ -133,8 +133,6 @@ Describe "Rule DetectingErrorsInParameterList" {
       }
     }#context
 
-#todo revoir si les noms des fichier refléte bien leur contenu
-  
     Context "When there are violations" {
 # La régle 1 annulée, PascalCase gére ces cas là
 
