@@ -15,6 +15,9 @@ E_PsnPositionsAreNotSequential={0} : The ParameterSet '{1}' contains positions w
 E_PsnMustHavePositivePosition={0} : In the ParameterSet '{1}', the parameter '{2}' must have a positive position ({3})
 E_PsnDuplicatePosition={0} : The ParameterSet '{1}' contains duplicate position {2} for the parameters {3}
 E_ConflictDuplicateParameterAttribut={0} : Conflict detected for parameter '{1}' in the parameterset '{2}': an attribute [Parameter()] can not be duplicated or contain contradictory statements.
+W_MandoryParameterWithDefaultValue=Conflict detected for parameter '{0}' : A mandatory parameter can not have a default value.
+E_CheckProcessBlockWhenPipelineIsUsed=The process block is missing. The argument 'ValueFromPipelineByPropertyName' or 'ValueFromPipeline' is inoperativ
+W_CheckProcessBlockWhenPipelineIsNotUsed=The process bloc is present, but none argument 'ValueFromPipelineByPropertyName' or 'ValueFromPipeline' exists.
 
   # Measure-AvoidPluralNameForParameter
 I_ParameterNameUsePlural=The parameter name '{0}' use plural. Change to singular '{1}'.
