@@ -17,7 +17,6 @@
 |[AvoidUsingMandoryParameterWithDefaultValue](./AvoidUsingMandoryParameterWithDefaultValue.md) | Warning | Measure-DetectingErrorsInParameterList |
 |[Measure-AvoidPluralNameForParameter](./Measure-AvoidPluralNameForParameter.md) | Information | Measure-AvoidPluralNameForParameter|
 |[Measure-ParameterNameShouldBePascalCase](./Measure-ParameterNameShouldBePascalCase.md) | Information | Measure-ParameterNameShouldBePascalCase |
-
 |[AvoidUsingMandoryParameterWithDefaultValue](./AvoidUsingMandoryParameterWithDefaultValue.md) | Warning | Measure-DetectingErrorsInParameterList |
 |[MissingArgumentToManageIncomingPipelineObject](./MissingArgumentToManageIncomingPipelineObject.md) | Warning | Measure-DetectingErrorsInParameterList |
 |[MissingProcessBlock](./MissingProcessBlock.md) | Error | Measure-DetectingErrorsInParameterList |
