@@ -42,7 +42,7 @@ LONG DESCRIPTION
     --> L'attribut [CmdletBinding] ne déclare pas sa propriété 'DefaultParameterSetName'. 
    
     La propriété 'DefaultParameterSetName' de l'attribut [CmdletBinding()] doit 
-    référencer un nom de jeu parmis ceux déclarés dans la fonction.
+    référencer un nom de jeu parmi ceux déclarés dans la fonction.
     Cette règle émet un 'Warning' si ce n'est pas le cas :
     --> Le nom du jeu de paramètre par défaut ne référence aucun des noms de jeu 
         de paramètres existant.
@@ -62,8 +62,8 @@ LONG DESCRIPTION
    
    Note:
    Selon la documentation de Powershell (version 2) chaque jeu de paramètre doit avoir au moins
-   un paramètre unique, cette régle semble être plus élaborée dans les dernières versions.
-   N'en connaissant pas le détail cette régle du contrôle de l'ambiguïté des jeux de paramètres 
+   un paramètre unique, cette règle semble être plus élaborée dans les dernières versions.
+   N'en connaissant pas le détail cette règle du contrôle de l'ambiguïté des jeux de paramètres 
    n'est pas implémentée.
 
  
@@ -105,7 +105,7 @@ LONG DESCRIPTION
     --> Le jeu de paramètres '{NomDeJeu}' contient une ou des positions dupliquées {liste} 
         pour les paramètres {NomsDesParamètres}
 
-    Pour terminer cette règle contrôle la duplication d'attribut [Parameter()] pour 
+   Cette règle contrôle la duplication d'attribut [Parameter()] pour 
     un même jeu de paramètre ainsi que les possibles déclarations contradictoires.
     Voici quelques exemples :
        #Cas correct
@@ -132,11 +132,30 @@ LONG DESCRIPTION
          [Parameter(Position=1)]
          [Parameter(ParameterSetName="F6")]
          [Parameter(ParameterSetName="F6")]
-    En cas de détection de ces cas la régle émet une erreur :           
+    En cas de détection de ces cas la règle émet une erreur :           
     --> Conflit détecté pour le paramètre '{NomDeParamètre}' dans le jeu '{NomDeJeu}' : 
         un attribut [Parameter()] ne peut être dupliqué ou contenir des déclarations contradictoires.    
 
-    todo OutputTypeAttibut
+    Si un paramètre déclare une valeur par défaut celui-ci ne peut également déclarer l'argument Mandatory.
+    En ligne de commande pou un paramètre obligatoire, qu'il ait ou non une valeur par défaut, 
+    Powershell demandera toujours la saisie d'un valeur. 
+    
+    Un paramètre utilisant l'argument 'ValueFromPipeline' ou 'ValueFromPipelineByPropertyName' 
+    implique de déclarer le bloc process dans le corps de la fonction.
+    Et inversement la présence d'un bloc process sans qu'aucun paramètre ne déclare 
+    l'argument 'ValueFromPipeline' ou 'ValueFromPipelineByPropertyName' déclenchera la règle. 
+
+Règle 'Measure-ParameterNameShouldBePascalCase'
+
+   Les noms de paramètre doivent respecter la convention de nommage PascalCase.
+   
+Règle 'Measure-AvoidPluralNameForParameter'
+
+   Les noms de paramètre doivent être au singulier. (todo cas des tableaux)
+
+Règle 'OutputTypeAttibut'
+   
+   todo 
 
 SEE ALSO
     https://windowsserver.uservoice.com/forums/301869-powershell/suggestions/11088147-parameterset-names-should-not-be-case-sensitive
