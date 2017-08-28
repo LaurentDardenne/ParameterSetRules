@@ -4,11 +4,11 @@
 
 ## Description
 
-The parameter names should be in PascalCase.
+The parameter names should be in Pascal case.
 
 ## How
 
-Rewrite with the namming convention PascalCase.
+Rewrite the parameter name with the Pascal case namming convention .
 
 ## Example
 
