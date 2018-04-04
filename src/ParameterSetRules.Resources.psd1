@@ -23,5 +23,5 @@ W_CheckProcessBlockWhenPipelineIsNotUsed=The process bloc is present, but none a
 I_ParameterNameUsePlural=The parameter name '{0}' use plural. Change to singular '{1}'.
   
   # Measure-ParameterNameShouldBePascalCase
-I_UsePascalCaseForParameterName=The parameter name '{0}' dot not use the Pascal case namming convention. In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name.
+I_UsePascalCaseForParameterName=The parameter name '{0}' dot not use the Pascal case naming convention. In other words, capitalize the first letter of each word in the parameter name, including the first letter of the name.
 '@
