@@ -1,6 +1,6 @@
 ﻿Import-LocalizedData -BindingVariable RulesMsg -Filename ParameterSetRules.Resources.psd1 -EA Stop
-                                      
-#<DEFINE %DEBUG%> 
+
+#region 
 #todo :  Function Measure-DetectingErrorsInOutputAttribut
 #        bug OutputType : https://github.com/PowerShell/PowerShell/issues/2935
 
@@ -21,7 +21,10 @@
 
 #régle 13 : nommage des paramètre utilisant un nom de variable automatique : 
 # https://github.com/PowerShell/PowerShell/issues/3061#issuecomment-275776552
-
+#  New Rule Suggestion: AvoidReuseOfAutomaticVariables 
+#  https://github.com/PowerShell/PSScriptAnalyzer/issues/712#issuecomment-320565984
+#endregion
+#<DEFINE %DEBUG%> 
 Import-module Log4Posh
 
 $Script:lg4n_ModuleName=$MyInvocation.MyCommand.ScriptBlock.Module.Name
@@ -38,7 +41,7 @@ $Params=@{
 
 $DebugLogger.PSDebug("-- LoadModule --") #<%REMOVE%>
 
-[string[]]$script:CommonParameters=[System.Management.Automation.Internal.CommonParameters].GetProperties().Names
+[string[]]$script:CommonParameters=[System.Management.Automation.Internal.CommonParameters].GetProperties().Name
 
 $script:CommonParametersFilter= { $script:CommonParameters -notContains $_.Name}
 
@@ -365,11 +368,11 @@ function GetParameter{
 #build the parameters collection :
 #return objects(into a hashtable) with the parameter name, the parameterset name and the position
 #The key of the hashtable avoid the duplication
-  param($BlockParameters, $ListDR,$Ast, $isProcessBlocMissing)
+  param($BlockParameter, $List,$Ast, $IsProcessBlocMissing)
    #Un jeu de paramètres ne peut être déduit de la position
    #si aucun de ses paramètres n'est mandatory
   function AddParameter {
-     param ($Name,$Psn,$Position=$script:PositionDefault,[boolean]$isValueFromPipeline)
+     param ($Name,$Psn,$Position=$script:PositionDefault,[boolean]$IsValueFromPipeline)
     $DebugLogger.PSDebug("Add '$ParameterName' into '$psn'") #<%REMOVE%>
     $O=[pscustomObject]@{
      Name=$Name
@@ -407,26 +410,26 @@ function GetParameter{
 #<UNDEF %DEBUG%>   
      #régle 7: Conflit détecté : un attribut [Parameter()] ne peut être dupliqué ou contradictoire
      $DebugLogger.PSDebug("$Name$Psn Conflit détecté : un attribut [Parameter()] ne peut être dupliqué ou contradictoire") #<%REMOVE%>
-     $Result_DEIPL.Add((NewDiagnosticRecord 'AvoidDuplicateParameterAttribut' ($RulesMsg.E_ConflictDuplicateParameterAttribut -F $SBInfo.NameOfBlock,$Name,$PSN) Error $Ast)) > $null
+     $List.Add((NewDiagnosticRecord 'AvoidDuplicateParameterAttribut' ($RulesMsg.E_ConflictDuplicateParameterAttribut -F $SBInfo.NameOfBlock,$Name,$PSN) Error $Ast)) > $null
     }                                       
   }
  function GetArgumentValue{
    param(
-     [System.Management.Automation.Language.NamedAttributeArgumentAst] $na
+     [System.Management.Automation.Language.NamedAttributeArgumentAst] $NamedArg
    )
 
-   $DebugLogger.PSDebug("`t$ParameterName NA is null :$($null -eq $na)") #<%REMOVE%>
-   $DebugLogger.PSDebug("`t`$na.Argument type :$($na.Argument.gettype())") #<%REMOVE%>
-   if ($na.ExpressionOmitted)
+   $DebugLogger.PSDebug("`t$ParameterName NA is null :$($null -eq $NamedArg)") #<%REMOVE%>
+   $DebugLogger.PSDebug("`t`$NamedArg.Argument type :$($NamedArg.Argument.gettype())") #<%REMOVE%>
+   if ($NamedArg.ExpressionOmitted)
    {
       $DebugLogger.PSDebug("`tGetArgumentValue ExpressionOmitted is True") #<%REMOVE%> 
       return $true
    }
-   elseif ($null -ne $na.Argument )
+   elseif ($null -ne $NamedArg.Argument )
    {
-       if ($na.Argument -is [System.Management.Automation.Language.VariableExpressionAst])
+       if ($NamedArg.Argument -is [System.Management.Automation.Language.VariableExpressionAst])
        {
-          if ($Na.Argument.Extent.Text -eq '$true')
+          if ($NamedArg.Argument.Extent.Text -eq '$true')
           {
               $DebugLogger.PSDebug("`tGetArgumentValue VariableExpressionAst return True") #<%REMOVE%> 
               return $true
@@ -438,7 +441,7 @@ function GetParameter{
           }
        }
         # extract from Parser.cs
-       $ceAst = $na.Argument -as [System.Management.Automation.Language.ConstantExpressionAst]
+       $ceAst = $NamedArg.Argument -as [System.Management.Automation.Language.ConstantExpressionAst]
        if ($null -ne  $ceAst)
        {
           $istrue=[System.Management.Automation.LanguagePrimitives]::IsTrue($ceAst.Value)
@@ -453,8 +456,8 @@ function GetParameter{
   $Parameters=@{}
   # Seule la premiére réussite du test affecte $true
   $isPipelineArgumentUsed=$false
-  $DebugLogger.PSDebug("BlockParameters.Count: $($BlockParameters.Count)") #<%REMOVE%>
-  Foreach ($Parameter in $BlockParameters)
+  $DebugLogger.PSDebug("BlockParameters.Count: $($BlockParameter.Count)") #<%REMOVE%>
+  Foreach ($Parameter in $BlockParameter)
   {
     
     $ParameterName=$Parameter.Name.VariablePath.UserPath
@@ -490,7 +493,7 @@ function GetParameter{
             {
               #régle 6: Un attribut [Parameter()] vide est inutile
               $DebugLogger.PSDebug("`tRule : [Parameter()] vide") #<%REMOVE%>
-              $Result_DEIPL.Add((NewDiagnosticRecord 'AvoidUsingUnnecessaryParameterAttribut' ($RulesMsg.W_PsnUnnecessaryParameterAttribut -F $SBInfo.NameOfBlock,$ParameterName) Warning $ScriptBlockAst )) > $null
+              $List.Add((NewDiagnosticRecord 'AvoidUsingUnnecessaryParameterAttribut' ($RulesMsg.W_PsnUnnecessaryParameterAttribut -F $SBInfo.NameOfBlock,$ParameterName) Warning $ScriptBlockAst )) > $null
             }
             else 
             {
@@ -541,7 +544,7 @@ function GetParameter{
                       # il n'y a qu'un seule déclaration de valeur et pour tout les PSN
                       $DebugLogger.PSDebug("`tRule '$ParameterName' : [Parameter(Mandatory=`$true)] ne peut avoir de valeur par défaut") #<%REMOVE%>
                       #todo vérifier présence Nom de function\nomParamétre ou du n° de ligne 
-                      $Result_DEIPL.Add((NewDiagnosticRecord 'AvoidUsingMandoryParameterWithDefaultValue' ($RulesMsg.W_MandoryParameterWithDefaultValue -F "$($SBInfo.NameOfBlock)\$ParameterName") Warning $ScriptBlockAst )) > $null
+                      $List.Add((NewDiagnosticRecord 'AvoidUsingMandoryParameterWithDefaultValue' ($RulesMsg.W_MandoryParameterWithDefaultValue -F "$($SBInfo.NameOfBlock)\$ParameterName") Warning $ScriptBlockAst )) > $null
                     }
                   }
               }
@@ -552,21 +555,24 @@ function GetParameter{
       }
     }  
   } 
-  $DebugLogger.PSDebug("isPipelineArgumentUsed=$isPipelineArgumentUsed   isProcessBlocMissing=$isProcessBlocMissing)") #<%REMOVE%>
-  if ($isPipelineArgumentUsed -and $isProcessBlocMissing)
-  {
-      #régle 8 : To accept all the records from the preceding cmdlet in the pipeline, 
-      #           your cmdlet must implement the ProcessRecord method.
-      #
-      #          Si au moins un paramètre déclare l'attribut [Parameter(ValueFromPipeline = $true)] ou [Parameter(ValueFromPipelineByPropertyName = $true)]
-      #          alors la présence du bloc Process dans un scriptblock est nécessaire.
-      $DebugLogger.PSDebug("`tRule : Bloc process absent, l'argument ValueFromPipeline est inopérant.") #<%REMOVE%>
-      $Result_DEIPL.Add((NewDiagnosticRecord 'MissingProcessBlock' $RulesMsg.E_CheckProcessBlockWhenPipelineIsUsed Error $ScriptBlockAst )) > $null
-  } 
-  elseif (($isProcessBlocMissing -eq $false) -and ($isPipelineArgumentUsed -eq $false)) {
+  $DebugLogger.PSDebug("isPipelineArgumentUsed=$isPipelineArgumentUsed   isProcessBlocMissing=$IsProcessBlocMissing)") #<%REMOVE%>
+  # todo 'régle' fausse. Un bloc End peut collecter tout les objets et ValueFromPipeline est nécessaire pour utiliser le pipe '|' 
+  # la présence du bloc Process et End ne renseigne pas $input (dans le bloc End)
+  # if ($isPipelineArgumentUsed -and $IsProcessBlocMissing)
+  # {
+  #     #régle 8 : To accept all the records from the preceding cmdlet in the pipeline, 
+  #     #           your cmdlet must implement the ProcessRecord method.
+  #     #
+  #     #          Si au moins un paramètre déclare l'attribut [Parameter(ValueFromPipeline = $true)] ou [Parameter(ValueFromPipelineByPropertyName = $true)]
+  #     #          alors la présence du bloc Process dans un scriptblock est nécessaire.
+  #     $DebugLogger.PSDebug("`tRule : Bloc process absent, l'argument ValueFromPipeline est inopérant.") #<%REMOVE%>
+  #     $List.Add((NewDiagnosticRecord 'MissingProcessBlock' $RulesMsg.E_CheckProcessBlockWhenPipelineIsUsed Error $ScriptBlockAst )) > $null
+  # } 
+  # elseif (($IsProcessBlocMissing -eq $false) -and ($isPipelineArgumentUsed -eq $false)) {
+  if (($IsProcessBlocMissing -eq $false) -and ($isPipelineArgumentUsed -eq $false)) {
       #régle 8 : Présence du bloc Process sans aucun attribut [Parameter(ValueFromPipeline = $true)] ou [Parameter(ValueFromPipelineByPropertyName = $true)]
       $DebugLogger.PSDebug("`tRule : Bloc process absent, l'argument ValueFromPipeline est inopérant.") #<%REMOVE%>
-      $Result_DEIPL.Add((NewDiagnosticRecord 'MissingArgumentToManageIncomingPipelineObject' $RulesMsg.W_CheckProcessBlockWhenPipelineIsNotUsed Warning $ScriptBlockAst )) > $null
+      $List.Add((NewDiagnosticRecord 'MissingArgumentToManageIncomingPipelineObject' $RulesMsg.W_CheckProcessBlockWhenPipelineIsNotUsed Warning $ScriptBlockAst )) > $null
  #todo test Filter/function Test { param($a) "a"; process {"B $_"}} 
  #todo cas : process sans pipeline et sans byname
  #           sans clause param() ? usage simple par $_
@@ -579,9 +585,9 @@ function TestSequentialAndBeginByZeroOrOne{
 # The positions should begin to zero or 1,
 # not be duplicated and be  an ordered sequence.
          
- param($NameOfBlock, $GroupByPSN, $Ast, $isDuplicate)
-  $PSN=$GroupByPSN.Name
-  $SortedPositions=$GroupByPSN.Group.Position|Where-Object {$_ -ne $script:PositionDefault}|Sort-Object
+ param($NameOfBlock, $GroupByPsn, $Ast, $IsDuplicate)
+  $PSN=$GroupByPsn.Name
+  $SortedPositions=$GroupByPsn.Group.Position|Where-Object {$_ -ne $script:PositionDefault}|Sort-Object
   if ($null -ne $SortedPositions)
   {
     $DebugLogger.PSDebug("psn= $PSN isUnique=$script:isSharedParameterSetName_Unique  -gt 1 $($SortedPositions[0] -gt 1)") #<%REMOVE%>
@@ -698,15 +704,15 @@ Function Measure-DetectingErrorsInParameterList{
 
     #($null -eq $ScriptBlockAst.ProcessBlock)
     
-    Foreach ($GroupByPSN in ( $ParametersList.Values|Group-Object -Property PSN)) {
-     $PSN=$GroupByPSN.Name
+    Foreach ($GroupByPsn in ( $ParametersList.Values|Group-Object -Property PSN)) {
+     $PSN=$GroupByPsn.Name
      $DebugLogger.PSDebug("Psn=$Psn") #<%REMOVE%>
    
-     $isduplicate=$false
+     $Isduplicate=$false
      #Pour chaque jeu, contrôle  les positions de ses paramètres
      # on regroupe une seconde fois pour déterminer s'il y a des duplications de numéro de position
      # et connaitre le nom des paramètres concernés.
-     $GroupByPSN.Group|
+     $GroupByPsn.Group|
       Group-Object Position|
        Foreach-Object {
         $ParameterName=$_.Group[0].Name   
@@ -731,11 +737,11 @@ Function Measure-DetectingErrorsInParameterList{
         $DebugLogger.PSDebug("`tRule : Duplicate position") #<%REMOVE%>
         $ofs=','
         $Result_DEIPL.Add((NewDiagnosticRecord 'AvoidDuplicateParameterPosition' ($RulesMsg.E_PsnDuplicatePosition -F $SBInfo.NameOfBlock,$PSN,$_.Name,"$($_.group.name)") Error $ScriptBlockAst )) > $null
-        $isDuplicate=$true
-        $isduplicate=$isduplicate 
+        $IsDuplicate=$true
+        $Isduplicate=$IsDuplicate #todo PSUseDeclaredVarsMoreThanAssignments
        }
 
-     $Dr=@(TestSequentialAndBeginByZeroOrOne $SBInfo.NameOfBlock $GroupByPSN $ScriptBlockAst $isDuplicate)
+     $Dr=@(TestSequentialAndBeginByZeroOrOne $SBInfo.NameOfBlock $GroupByPsn $ScriptBlockAst $IsDuplicate)
      $Result_DEIPL.AddRange($Dr)> $null
 
     } #foreach
@@ -806,6 +812,7 @@ Function Measure-ParameterNameShouldBePascalCase{
     {
       $ParameterName=$Parameter.Name.VariablePath.UserPath
        #régle 10: The parameter names should be in PascalCase.
+       #https://msdn.microsoft.com/en-us/library/dd878270(v=vs.85).aspx
       if ($ParameterName -cnotmatch '^([A-Z][a-z]+)+$')
       { 
           #groupe : une majuscule suivi d'une ou plusieures minuscules, le groupe peut être présent plusieurs fois 
@@ -927,6 +934,92 @@ Function Measure-AvoidPluralNameForParameter{
   #<UNDEF %DEBUG%>        
   }#process
 }#Measure-AvoidPluralNameForParameter
- 
+
+<#
+https://github.com/PowerShell/PSScriptAnalyzer/issues/294
+spécifier le nom complet du paramètre -> pb potentiel nom de paramètre ambigu.
+
+
+Une précaution vient à l'esprit ici. J'ai vu des applets de commande qui ont prolongé
+nom du paramètre d'une version à la suivante. Par exemple, Get-Foo
+-Computer dans une version, puis Get-Foo -ComputerName dans une autre version
+une fois qu'ils se rendent compte qu'ils devraient être compatibles avec le -ComputerName
+paramètre. Avec cette règle proposée, les scripts avertiraient tout d'un coup
+quand un module a été mis à jour, quand ils n'ont pas déjà averti. C'est un peu
+un cas de bord, mais je voulais l'ajouter ici comme matière à réflexion tout en
+compte tenu de cette règle, car il est déjà arrivé.
+#>
+# Function Measure-AvoidUsingIncompleteParameterName{
+# <#
+# .SYNOPSIS
+#    Check if parameter names are fully entered
+
+# .EXAMPLE
+#     Measure-AvoidUsingIncompleteParameterName $ScriptBlockAst 
+    
+# .INPUTS
+#   [System.Management.Automation.Language.$ScriptBlockAst]
+  
+# .OUTPUTS
+#     [Microsoft.Windows.Powershell.ScriptAnalyzer.Generic.DiagnosticRecord[]]
+# #>
+
+#   [CmdletBinding()]
+#   [OutputType([Microsoft.Windows.PowerShell.ScriptAnalyzer.Generic.DiagnosticRecord[]])]
+  
+#   Param(
+#         [Parameter(Mandatory = $true)]
+#         [ValidateNotNullOrEmpty()]
+#         [System.Management.Automation.Language.ScriptBlockAst]
+#       $ScriptBlockAst       
+#   )
+
+#   process {
+#     try
+#     {  
+#       throw "under construction. TODO"    
+#       TraceHeader 'AvoidUsingIncompleteParameterName'  #<%REMOVE%> 
+#       $SBInfo=Get-ScriptBlockType $ScriptBlockAst
+  
+        
+#       $Result_PluralName=New-object System.Collections.Arraylist
+
+#       Foreach ($Parameter in $SBInfo.Parameters)
+#       {
+#         $ParameterName=$Parameter.Name.VariablePath.UserPath
+
+
+#         if ($Result_PluralName.count -gt 0)
+#         {
+#           $DebugLogger.PSDebug("return Result") #<%REMOVE%>
+#           return $Result_PluralName 
+#         }
+#       }
+#     }
+#     catch
+#     {
+#       $ER= New-Object -Typename System.Management.Automation.ErrorRecord -Argumentlist $_.Exception, 
+#                                                                               "DetectingErrorsInParameterList-$($SBInfo.NameOfBlock)", 
+#                                                                               "NotSpecified",
+#                                                                               $ScriptBlockAst 
+#       $DebugLogger.PSFatal($_.Exception.Message,$_.Exception) #<%REMOVE%>
+#       $PSCmdlet.ThrowTerminatingError($ER) 
+#     }  
+#     #<DEFINE %DEBUG%>
+#     finally {
+#     $DebugLogger.PSDebug('Finally : Measure-Measure-AvoidUsingIncompleteParameterName') #<%REMOVE%>
+#     Stop-Log4Net $Script:lg4n_ModuleName
+#     }  
+#   #<UNDEF %DEBUG%>        
+#   }#process
+# }#Measure-AvoidUsingIncompleteParameterName
+
+#ProvideExistingParameters
+#https://github.com/PowerShell/PSScriptAnalyzer/issues/295
+# Function Get-Information {
+#   param(
+#   $serviceName
+#   )
+#   Get-Service -Notavailable $serviceName
 
 Export-ModuleMember -Function Measure-*
