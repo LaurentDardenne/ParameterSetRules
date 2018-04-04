@@ -62,42 +62,5 @@ Describe "Rule DetectingErrorsInParameterList-Manage Pipeline" {
         $Results[0].RuleName| should be 'MissingArgumentToManageIncomingPipelineObject'
       }  
       #todo mixed ?
-      
-#without process block
-      It "Process block missing, parameters used ValueFromPipeline (one by PSN)." {
-        $FileName="$Path\ValueFromPipeline One by PSN Without processblock.ps1"
-        
-        $Results = Invoke-ScriptAnalyzer -Path $Filename -CustomRulePath $CustomRulePath
-        $Results.Count | should be (1)
-        $Results[0].Severity| should be 'Error'
-        $Results[0].RuleName| should be 'MissingProcessBlock'
-      }
-
-      It "Process block missing, parameters used ValueFromPipelinePropertyName (one by PSN)." {
-        $FileName="$Path\VFPByPropertyName One by PSN Without processblock.ps1"
-        
-        $Results = Invoke-ScriptAnalyzer -Path $Filename -CustomRulePath $CustomRulePath
-        $Results.Count | should be (1)
-        $Results[0].Severity| should be 'Error'
-        $Results[0].RuleName| should be 'MissingProcessBlock'
-      }
-
-      It "Process block missing, parameters used mixed VPF (one by PSN)." {
-        $FileName="$Path\MixedVFP One by PSN Without processblock.ps1"
-        
-        $Results = Invoke-ScriptAnalyzer -Path $Filename -CustomRulePath $CustomRulePath
-        $Results.Count | should be (1)
-        $Results[0].Severity| should be 'Error'
-        $Results[0].RuleName| should be 'MissingProcessBlock'
-      }
-      
-      It "Process block missing, two ValueFromPipeline in the same PSN ." {
-        $FileName="$Path\Two ValueFromPipeline in the same PSN and Process block missing.ps1"
-        
-        $Results = Invoke-ScriptAnalyzer -Path $Filename -CustomRulePath $CustomRulePath
-        $Results.Count | should be (1)
-        $Results[0].Severity| should be 'Error'
-        $Results[0].RuleName| should be 'MissingProcessBlock'
-      }        
     }#context
 }
