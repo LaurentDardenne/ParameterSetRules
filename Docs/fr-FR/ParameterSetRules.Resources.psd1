@@ -16,7 +16,6 @@ E_PsnMustHavePositivePosition={0} : Dans le jeu de paramètres '{1}', le paramè
 E_PsnDuplicatePosition={0} : Le jeu de paramètres '{1}' contient une ou des positions dupliquées {2} pour les paramètres {3}
 E_ConflictDuplicateParameterAttribut={0} : Conflit détecté pour le paramètre '{1}' dans le jeu '{2}' : un attribut [Parameter()] ne peut être dupliqué ou contenir des déclarations contradictoires.
 W_MandoryParameterWithDefaultValue=Conflit détecté pour le paramètre '{0}' : un paramètre obligatoire ne peut avoir de valeur par défaut.
-E_CheckProcessBlockWhenPipelineIsUsed=Le bloc 'process' est absent. L'argument 'ValueFromPipelineByPropertyName' or 'ValueFromPipeline' est inopérant.
 W_CheckProcessBlockWhenPipelineIsNotUsed=Le bloc 'process' est présent, mais aucun argument 'ValueFromPipelineByPropertyName' or 'ValueFromPipeline' n'est déclaré.
 
   # Measure-AvoidPluralNameForParameter
